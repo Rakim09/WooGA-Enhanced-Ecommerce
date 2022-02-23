@@ -29,14 +29,8 @@ final class Classes {
 		// phpcs:disable
 		// ignore for readable array values one a single line
 		return [
-			[ 'init' => 'Integrations' ],
-			[ 'init' => 'App\\General' ],
 			[ 'init' => 'App\\Frontend', 'on_request' => 'frontend' ],
 			[ 'init' => 'App\\Backend', 'on_request' => 'backend' ],
-			[ 'init' => 'App\\Rest', 'on_request' => 'rest' ],
-			[ 'init' => 'App\\Cli', 'on_request' => 'cli' ],
-			[ 'init' => 'App\\Cron', 'on_request' => 'cron' ],
-			[ 'init' => 'Compatibility' ],
 		];
 		// phpcs:enable
 	}
