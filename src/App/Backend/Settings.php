@@ -86,7 +86,8 @@ class Settings extends Base {
 			'wooga-general-settings',
 			'wooga-general-settings-section',
 			[
-				'label_for' => 'wooga_ga_tracking_id'
+				'label_for' => 'wooga_ga_tracking_id',
+				'required' => true,
 			]
 		);
 
@@ -97,7 +98,9 @@ class Settings extends Base {
 			'wooga-general-settings',
 			'wooga-general-settings-section',
 			[
-				'label_for' => 'wooga_brand_taxonomy'
+				'label_for' => 'wooga_brand_taxonomy',
+				'required' => false,
+				'description' => 'If empty product brand will not be added to tracking. Most common: Woocommerce Brands plugin - `product_brand`, YITH WooCommerce Brands plugin - `yith_product_brand`, custom product attribute - `pa_brand`'
 			]
 		);
 
@@ -114,7 +117,8 @@ class Settings extends Base {
 
 	public function settingsSectionCallback( array $args )
 	{
-		echo '<p>Set up your Google Analytics Tracking ID</p>';
+
+		echo "<p>REMEMBER! You need to set up your Google Tracking method and add Tracking Code in different way - this plugin doesn't have this feature yet.</p>";
 	}
 	
 
@@ -122,15 +126,30 @@ class Settings extends Base {
 	{
 		$value = get_option( $args['label_for'] );
 
-		echo sprintf( 
+		$html = sprintf( 
 			'<input
-			name="%1$s"
-			id="%1$s"
-			type="text"
-			value="%2$s"
+				class="regular-text"
+				name="%1$s"
+				id="%1$s"
+				type="text"
+				value="%2$s"
+				%3$s
 			/>',
 			$args['label_for'],
-			$value
+			esc_attr( $value ),
+			$args['required'] ? 'required="required"' : '',
 		);
+
+		if ( isset( $args['description'] ) && '' !== $args['description'] ) {
+			$html .= sprintf( 
+				'<p class="description" id="%1$s">
+					%2$s
+				</p>',
+				$args['label_for'] . '-description',
+				$args['description'],
+			);
+		}
+
+		echo $html;
 	}
 }
