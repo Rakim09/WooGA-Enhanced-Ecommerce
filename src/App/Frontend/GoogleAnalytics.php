@@ -49,8 +49,10 @@ class GoogleAnalytics extends Base {
 
     public function checkoutCreateOrder( WC_Order $order  )
     {
-        $cid = preg_replace("/^.+\.(.+?\..+?)$/", "\\1", @$_COOKIE['_ga']);
-        $order->update_meta_data( 'wooga_ga_cid', $cid );
+        if ( isset($_COOKIE['_ga']) ) {
+            $cid = preg_replace("/^.+\.(.+?\..+?)$/", "\\1", @$_COOKIE['_ga']);
+            $order->update_meta_data( 'wooga_ga_cid', $cid );
+        }
     }
 
     public function paymentComplete( $order_id )
@@ -59,6 +61,10 @@ class GoogleAnalytics extends Base {
          * @var WC_Order $order
          */
         $order = wc_get_order( $order_id );
+
+        if ( '' !== $order->get_meta('wooga_ga_cid') ) {
+            return;
+        }
 
         $analytics = new Analytics();
 
