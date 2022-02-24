@@ -28,9 +28,6 @@ trait Singleton {
 	final private function __clone() {
 	}
 
-	final private function __wakeup() {
-	}
-
 	/**
 	 * @return self
 	 * @since 1.0.0
