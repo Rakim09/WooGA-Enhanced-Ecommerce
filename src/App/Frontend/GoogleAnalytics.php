@@ -13,6 +13,7 @@ declare( strict_types = 1 );
 
 namespace WoogaEnhancedEcommerce\App\Frontend;
 
+use WoogaEnhancedEcommerce\Common\Utils\Errors;
 use WoogaEnhancedEcommerce\Common\Abstracts\Base;
 use TheIconic\Tracking\GoogleAnalytics\Analytics;
 use WC_Order;
@@ -41,12 +42,17 @@ class GoogleAnalytics extends Base {
 		 *
 		 * Add plugin code here
 		 */
-		
         add_action( 'woocommerce_checkout_create_order', [ $this, 'checkoutCreateOrder' ] );
 
         add_action( 'woocommerce_payment_complete', [ $this, 'paymentComplete' ] );
 	}
 
+    /**
+	 * Checkout order hook for adding google analytics client id to order meta data
+	 *
+	 * @param WC_Order $order WooCommerce Order
+	 * @since 1.0.0
+	 */
     public function checkoutCreateOrder( WC_Order $order  )
     {
         if ( isset($_COOKIE['_ga']) ) {
@@ -55,6 +61,12 @@ class GoogleAnalytics extends Base {
         }
     }
 
+    /**
+	 * Checkout order hook for sending tracking data to GA 
+	 *
+	 * @param int $order_id WooCommerce Order ID
+	 * @since 1.0.0
+	 */
     public function paymentComplete( $order_id )
     {
         /**
@@ -62,7 +74,7 @@ class GoogleAnalytics extends Base {
          */
         $order = wc_get_order( $order_id );
 
-        if ( '' !== $order->get_meta('wooga_ga_cid') ) {
+        if ( '' === $order->get_meta('wooga_ga_cid') ) {
             return;
         }
 
@@ -108,6 +120,8 @@ class GoogleAnalytics extends Base {
         $analytics->setEventCategory('Checkout')
             ->setEventAction('Purchase')
             ->sendEvent();
+
+        $order->delete_meta_data( 'wooga_ga_cid' );
     }
 
     private function getProductTerm( int $product_id, string $taxonomy ): string
